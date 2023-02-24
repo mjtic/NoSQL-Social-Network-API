@@ -44,16 +44,16 @@ module.exports = {
             : res.json("thought successfully updated")
         }).catch((err)=> res.status(500).json(err.message));
   },
-  deleteThought (req, res){
-    Thought.findOneAndDelete(
-        {_id:req.params.thoughtId},
-    ).then(thought=>{
-        if (!thought){
-        return res.status(404).json({message: "no thought with that ID"})
-  }
-  return User.findOneAndUpdate
-})
-  }
+//   deleteThought (req, res){
+//     Thought.findOneAndDelete(
+//         {_id:req.params.thoughtId},
+//     ).then(thought=>{
+//         if (!thought){
+//         return res.status(404).json({message: "no thought with that ID"})
+//   }
+//   return User.findOneAndUpdate
+// })
+//   }
 
 
 }
