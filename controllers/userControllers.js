@@ -5,6 +5,9 @@ module.exports = {
   //Get all users
   getAllUsers(req, res) {
     User.find()
+      .select("-__v")
+      .populate("friends")
+      .populate("thoughts")
       .then((users) => res.json(users))
       .catch((err) => res.status(500).json(err));
   },
