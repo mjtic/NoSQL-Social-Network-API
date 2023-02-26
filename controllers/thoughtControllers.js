@@ -69,6 +69,22 @@ module.exports = {
       // return User.findOneAndUpdate
     });
   },
+  addReaction(req, res){
+    Thought.findOneAndUpdate(
+      {_id: req.params.id },
+      {$push: {reactions: req.body}},
+      { runValidators: true, new: true }
+      )
+      .select('-__v')
+      .populate('reactions').then
+      ((thought)=>{
+        if(!thought){
+          res.status(404).json({ message: 'No reaction found with that ID'});
+        } else{
+          res.json(thought)
+        }
+      }).catch((err) => res.status(500).json(err.message));
+  }
   
 //   reactions: [
 //     ReactionSchema
