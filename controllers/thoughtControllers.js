@@ -47,8 +47,8 @@ module.exports = {
       { runValidators: true, new: true }
     )
       .then((thought) => {
-        console.log("***");
-        console.log(thought);
+        // console.log("***");
+        // console.log(thought);
         if (!thought) {
           res
             .status(404)
@@ -69,25 +69,85 @@ module.exports = {
       // return User.findOneAndUpdate
     });
   },
-  addReaction(req, res){
+  addReaction({ params, body}, res) {
     Thought.findOneAndUpdate(
-      {_id: req.params.id },
-      {$push: {reactions: req.body}},
-      { runValidators: true, new: true }
-      )
-      .select('-__v')
-      .populate('reactions').then
-      ((thought)=>{
-        if(!thought){
-          res.status(404).json({ message: 'No reaction found with that ID'});
-        } else{
-          res.json(thought)
-        }
-      }).catch((err) => res.status(500).json(err.message));
-  }
-  
-//   reactions: [
-//     ReactionSchema
-// ]
+        { _id: params.thoughtId },
+        { $push: { reactions: body }}, 
+        { new: true, runValidators: true }
+    )
+    .populate({
+        path: 'reactions',
+        select: '-__v'
+    })
+    .select('-__v')
+    .then(thought => {
+    if (!thought) {
+        res.status(404).json({ message: 'No thought found with this id!' });
+        return;
+    }
+    res.json(thought);
+})
+.catch(err => res.status(400).json(err))
+
+},
+deleteReaction({ params }, res) {
+  Thought.findOneAndUpdate(
+      { _id: params.thoughtId }, 
+      { $pull: { reactions: { reactionId: params.reactionId }}},
+      { new : true }
+  )
+  .then(thought => {
+      if (!thought) {
+          res.status(404).json({ message: 'No thought found with this id!' });
+          return;
+      }
+      res.json(thought);
+  })
+  .catch(err => res.status(400).json(err));
+}
+
+
+
+
+
+
+
+  // addReaction(req, res){
+  //   Thought.findOneAndUpdate(
+  //     {_id: req.params.thoughtId },
+  //     {$push: {reactions: req.body}},
+  //     { runValidators: true, new: true }
+  //     )
+  //     .select('-__v')
+  //     .populate('reactions').then
+  //     ((thought)=>{
+  //       if(!thought){
+  //         res.status(404).json({ message: 'No reaction found with that ID'});
+  //       } else{
+  //         res.json(thought)
+  //       }
+  //     }).catch((err) => res.status(500).json(err.message));
+  // },
+  // deleteReaction(req,res){
+  //   console.log(req.params);
+  //   Thought.findOneAndDelete(
+  //     {_id:req.params.thoughtId},
+  //     {$pull: {reactions:req.params.reactionId}},
+  //     {runValidators: true, new: true}
+  //     )
+  //     .then((thought) => {
+  //       console.log("***");
+  //       console.log(thought);
+  //       if (!thought) {
+  //         res
+  //           .status(404)
+  //           .json({ message: "No thought found with that ID" });
+  //       } else {
+  //         res.json("reaction successfully deleted");
+  //       }
+  //     })
+  //     .catch((err) => res.status(500).json(err.message));
+  // },
+
 
 };
