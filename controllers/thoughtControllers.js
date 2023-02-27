@@ -106,12 +106,6 @@ deleteReaction({ params }, res) {
   .catch(err => res.status(400).json(err));
 }
 
-
-
-
-
-
-
   // addReaction(req, res){
   //   Thought.findOneAndUpdate(
   //     {_id: req.params.thoughtId },
